@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Diagnostics: Narek Saryan</title>
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #00ff41;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 20px;
+            font-size: 16px;
+            line-height: 1.5;
+            margin: 0;
+        }
+        #terminal {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .input-line {
+            display: flex;
+            margin-top: 10px;
+        }
+        #userInput {
+            background: transparent;
+            border: none;
+            color: #00ff41;
+            font-family: inherit;
+            font-size: inherit;
+            flex-grow: 1;
+            outline: none;
+        }
+        .response {
+            color: #a8f0b0;
+            margin-bottom: 10px;
+            white-space: pre-wrap;
+        }
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 1.2em;
+            background-color: #00ff41;
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+        }
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+        .scan-line {
+            border-bottom: 2px solid #00ff41;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="terminal">
+        <div class="scan-line"></div>
+        <div id="output"></div>
+        <div class="input-line" id="inputContainer" style="display:none;">
+            <span>user@recruiting:~$ </span>
+            <input type="text" id="userInput" autocomplete="off">
+        </div>
+    </div>
+
+    <script>
+        const output = document.getElementById("output");
+        const inputContainer = document.getElementById("inputContainer");
+        const userInput = document.getElementById("userInput");
+
+        // --- Konfiguration ---
+        const ZIEL_TEXT = "Einstieg in die IT / Softwareentwicklung (Fokus: MedTech)";
+
+        // Hilfsfunktion: Simuliert langsames Tippen
+        async function typeWriter(text, speed = 30) {
+            const line = document.createElement("div");
+            output.appendChild(line);
+            
+            for (let i = 0; i < text.length; i++) {
+                line.textContent += text.charAt(i);
+                await new Promise(r => setTimeout(r, speed));
+                window.scrollTo(0, document.body.scrollHeight);
+            }
+            await new Promise(r => setTimeout(r, 100));
+        }
+
+        async function bootSystem() {
+            await typeWriter("INITIALISIERE SYSTEM DIAGNOSE...", 50);
+            await new Promise(r => setTimeout(r, 500));
+            await typeWriter("[OK] Kandidat: Narek Saryan", 30);
+            await new Promise(r => setTimeout(r, 300));
+            await typeWriter("[OK] Lade Sprachpakete...", 30);
+            await new Promise(r => setTimeout(r, 300));
+            await typeWriter("[OK] System bereit.", 30);
+            output.appendChild(document.createElement("br")); 
+            output.appendChild(document.createElement("hr")); 
+            await typeWriter("Willkommen. Zugriff gewährt.", 30);
+            output.appendChild(document.createElement("hr")); 
+            
+            showInput();
+        }
+
+        function showInput() {
+            const hint = document.createElement("div");
+            hint.innerHTML = "<br>Verfügbare Befehle: 'bio', 'skills', 'kontakt', 'exit'";
+            output.appendChild(hint);
+            inputContainer.style.display = "flex";
+            userInput.focus();
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+
+        // --- Die Logik ---
+        async function processCommand(cmd) {
+            inputContainer.style.display = "none"; 
+            
+            const userLine = document.createElement("div");
+            userLine.textContent = "user@recruiting:~$ " + cmd;
+            userLine.style.marginTop = "10px";
+            output.appendChild(userLine);
+
+            if (cmd === "bio") {
+                await typeWriter(">>> LADE PROFIL: NAREK SARYAN...", 20);
+                await new Promise(r => setTimeout(r, 500));
+                
+                const response = document.createElement("div");
+                response.className = "response";
+                response.innerHTML = `Name:        Narek Saryan
+Geburtstag:  01.05.1993 (Binär: 0001.0101.11111001001)
+Status:      Motivierter Quereinsteiger
+Ziel:        ${ZIEL_TEXT}
+Statement:   Ich suche ein Upgrade auf eine neue Herausforderung, bei der ich meine Datenbank an Erfahrungen erweitern kann.`;
+                output.appendChild(response);
+
+            } else if (cmd === "skills") {
+                await typeWriter(">>> ANALYSIERE KOMPETENZEN...", 20);
+                await new Promise(r => setTimeout(r, 500));
+                
+                const response = document.createElement("div");
+                response.className = "response";
+                response.innerHTML = `
+[HARDWARE & SOFTWARE]
+- Python:    Grundlagen & Lernend (siehe Code)
+- SQL:       In Planung / Großes Interesse
+- IT-Allg.:  Hardware & Systemverständnis
+
+[SOFT SKILLS]
+- Analytische Fähigkeiten (Problemlösung)
+- Hohe Lernbereitschaft
+- Zuverlässigkeit & Teamgeist
+
+[LANGUAGE PACKS / SPRACHEN]
+[*] Deutsch:   UTF-8 SUPPORTED (B2/C1 - Sehr gut)
+[*] Armenisch: SYSTEM_NATIVE (Muttersprache)
+[*] Russisch:  HIGH_AVAILABILITY (C1 - Fließend)
+[!] Englisch:  INSTALLING UPDATES... (A2 - Lernend)`;
+                output.appendChild(response);
+
+            } else if (cmd === "kontakt") {
+                await typeWriter(">>> VERBINDUNGSDATEN...", 20);
+                const response = document.createElement("div");
+                response.className = "response";
+                response.innerHTML = `E-Mail:      narek.saryan@outlook.de
+Mobil:       +49 174 9507068
+Standort:    96049 Bamberg, Deutschland`;
+                output.appendChild(response);
+
+            } else if (cmd === "exit") {
+                await typeWriter("System wird heruntergefahren... Auf Wiedersehen!", 50);
+                return; 
+
+            } else if (cmd === "clear") {
+                output.innerHTML = "";
+            } else {
+                const err = document.createElement("div");
+                err.textContent = "Fehler: Befehl nicht bekannt. Bitte wählen Sie aus der Liste.";
+                output.appendChild(err);
+            }
+
+            showInput(); 
+        }
+
+        userInput.addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                const text = userInput.value.trim().toLowerCase();
+                userInput.value = "";
+                processCommand(text);
+            }
+        });
+
+        document.body.onclick = function() {
+            userInput.focus();
+        };
+
+        bootSystem();
+
+    </script>
+</body>
+</html>
